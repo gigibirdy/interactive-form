@@ -172,7 +172,29 @@ and "Bitcoin" information.*/
 $('#paypal').hide();
 $('#bitcoin').hide();
 
+if($('#payment').prop('value') !== 'Credit Card'){
+  $('#cc-num').attr('disabled', 'disabled');
+  $('#zip').attr('disabled', 'disabled');
+  $('#cvv').attr('disabled', 'disabled');
+};
+
 $('#payment').on('change', function(e) {
+  if($('#payment').prop('value') === 'Credit Card'){
+    $('#cc-num').prop('disabled', false);
+    $('#zip').prop('disabled', false);
+    $('#cvv').prop('disabled', false);
+  } else {
+    removeEmptyErrMsg($('.emptyCCNMessage'), $('.CCNMessage'), $('#cc-num'));
+    removeEmptyErrMsg($('.emptyZipMessage'), $('.zipCodeMessage'), $('#zip'));
+    removeEmptyErrMsg($('.emptyCVVMessage'), $('.CVVMessage'), $('#cvv'));
+    $('#cc-num').attr('disabled', 'disabled');
+    $('#zip').attr('disabled', 'disabled');
+    $('#cvv').attr('disabled', 'disabled');
+    $('#cc-num').prop('value', '');
+    $('#zip').prop('value', '');
+    $('#cvv').prop('value', '');
+  };
+  removeEmptyErrMsg($('.paymentMessage'), $('.paymentMessage'), $('#payment'));
   /*Display payment sections based on the payment option chosen in the select
   menu.*/
   $('#payment').prev().text('I\'m going to pay with:');
@@ -214,8 +236,8 @@ $('#cc-num').on('keyup', function(e) {
   removeEmptyErrMsg($('.emptyCCNMessage'), $('.CCNMessage'), $('#cc-num'));
   /*If input is not a number or short than 13 digits or longer than 16 digits,
   append error message.*/
-  const errMsg = '<p>Please enter a number that is between 13 and 16 digits long.</p>';
-  if (validateCreditCard($(e.target).prop('value')) === false) {
+  if (validateCreditCard($(e.target).prop('value')) === false && $(e.target).prop('value') !== '') {
+    const errMsg = '<p>Please enter a number that is between 13 and 16 digits long.</p>';
     inputErrMessage($('#cc-num'), errMsg, 'CCNMessage');
   }
 });
@@ -233,8 +255,8 @@ $('#zip').on('keyup', function(e) {
   removeEmptyErrMsg($('.emptyZipMessage'), $('.zipCodeMessage'), $('#zip'));
   /*If input is not a number or short or longer than 5 digits, append error
   message.*/
-  const errMsg = '<p>Please enter a number that is 5 digits long.</p>';
-  if (validateZipCode($(e.target).prop('value')) === false) {
+  if (validateZipCode($(e.target).prop('value')) === false && $(e.target).prop('value') !== '') {
+    const errMsg = '<p>Please enter a number that is 5 digits long.</p>';
     inputErrMessage($('#zip'), errMsg, 'zipCodeMessage');
   }
 });
@@ -252,8 +274,8 @@ $('#cvv').on('keyup', function(e) {
   removeEmptyErrMsg($('.emptyCVVMessage'), $('.CVVMessage'), $('#cvv'));
   /*If input is not a number or short or longer than 3 digits, append error
   message.*/
-  const errMsg = '<p>Please enter a number that is 3 digits long.</p>';
-  if (validateCVV($(e.target).prop('value')) === false) {
+  if (validateCVV($(e.target).prop('value')) === false && $(e.target).prop('value') !== '') {
+    const errMsg = '<p>Please enter a number that is 3 digits long.</p>';
     inputErrMessage($('#cvv'), errMsg, 'CVVMessage');
   }
 });
@@ -293,7 +315,14 @@ $('button[type="submit"]').on('click', function(e) {
     }
   }
   submitError($('#mail'), $('.emptyMailMessage'), 'Email address', 'emptyMailMessage', $('.mailMessage'));
+  if($('#payment').prop('value') === ''){
+    e.preventDefault();
+    removeEmptyErrMsg($('.paymentMessage'), $('.paymentMessage'), $('#payment'));
+    const errMsg = '<p>Please select a payment method.</p>';
+    inputErrMessage($('#payment'), errMsg, 'paymentMessage');
+  } else if($('#payment').prop('value') === 'Credit Card'){
   submitError($('#cc-num'), $('.emptyCCNMessage'), 'Credit card number', 'emptyCCNMessage', $('.zipCodeMessage'));
   submitError($('#zip'), $('.emptyZipMessage'), 'Zip code', 'emptyZipMessage', $('.zipCodeMessage'));
   submitError($('#cvv'), $('.emptyCVVMessage'), 'CVV code', 'emptyCVVMessage', $('.CVVMessage'));
+}
 })
