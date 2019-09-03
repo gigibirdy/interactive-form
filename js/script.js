@@ -111,13 +111,19 @@ $('#design').change(function(e) {
   //Append color options based on user's choice of design theme.
   if (e.target.value === 'js puns') {
     $('#color').append(jspunsColor);
+    $('#colors-js-puns label').text('Color: cornflowerblue');
   } else if (e.target.value === 'heart js') {
     $('#color').append(jsColor);
+    $('#colors-js-puns label').text('Color: tomato');
   } else {
-    $('#color').prepend('<option value="">Please select a T-shirt theme</option>');
+    $('#colors-js-puns label').text('Color: Please select a T-shirt theme');
   }
 });
 
+$('#color').change(function(e) {
+  $('#colors-js-puns label').text('Color: ');
+  $('#colors-js-puns label').append($(e.target).prop('value'));
+});
 //-----------------------------------------------------------------------------
 //Activity field
 
@@ -130,7 +136,9 @@ $('input[type="checkbox"]').on('change', function(e) {
       if ($(this).prop('disabled') === false) {
         $(this).attr('disabled', 'disabled');
         $('<label>Workshop below in the competing time slot isn\'t available.</label>').css('color', 'grey').insertBefore($(this).parent());
-        $(this).parent().css({'text-decoration': 'line-through'});
+        $(this).parent().css({
+          'text-decoration': 'line-through'
+        });
       } else {
         /*Enable the checkbox of activities when active in competing time slot
         is unchecked.*/
@@ -269,7 +277,7 @@ $('button[type="submit"]').on('click', function(e) {
   /*If user never touched the activity field before submitting the form,
   prevent the form from submitting and show error message when user clicks
   the submit button.*/
-  if ($('h3').length === 0 && $('.activityMessage').length === 0) {
+  if ($('.activities :checked').length === 0 && $('.activityMessage').length === 0) {
     e.preventDefault();
     const errMsg = '<p>*Please select at least one activity</p>';
     inputErrMessage($('.activities'), errMsg, 'activityMessage');
@@ -291,13 +299,14 @@ $('button[type="submit"]').on('click', function(e) {
     } else if (errMsgElement.length === 1) {
       e.preventDefault();
     }
-  }
+  };
 
   submitError($('#mail'), $('.emptyMailMessage'), 'Email address', 'emptyMailMessage', $('.mailMessage'));
   submitError($('#cc-num'), $('.emptyCCNMessage'), 'Credit card number', 'emptyCCNMessage', $('.zipCodeMessage'));
   submitError($('#zip'), $('.emptyZipMessage'), 'Zip code', 'emptyZipMessage', $('.zipCodeMessage'));
   submitError($('#cvv'), $('.emptyCVVMessage'), 'CVV code', 'emptyCVVMessage', $('.CVVMessage'));
-  $('form').submit(function( event ) {
+
+  $('form').submit(function(event) {
     alert('Submitted')
   });
 });
