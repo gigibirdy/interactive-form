@@ -296,17 +296,16 @@ $('button[type="submit"]').on('click', function(e) {
       element.prev().attr('class', emptyMsgClass)
       /*If error message exists due to invalid input, prevent user from
       submitting the form when user clicks the submit button.*/
-    } else if (errMsgElement.length === 1) {
+    } else if (errMsgElement.length === 1 || emptyMsgElement.length === 1) {
       e.preventDefault();
     }
   };
 
   submitError($('#mail'), $('.emptyMailMessage'), 'Email address', 'emptyMailMessage', $('.mailMessage'));
-  submitError($('#cc-num'), $('.emptyCCNMessage'), 'Credit card number', 'emptyCCNMessage', $('.zipCodeMessage'));
-  submitError($('#zip'), $('.emptyZipMessage'), 'Zip code', 'emptyZipMessage', $('.zipCodeMessage'));
-  submitError($('#cvv'), $('.emptyCVVMessage'), 'CVV code', 'emptyCVVMessage', $('.CVVMessage'));
 
-  $('form').submit(function(event) {
-    alert('Submitted')
-  });
+  if ($('#payment').prop('value') === 'Credit Card') {
+    submitError($('#cc-num'), $('.emptyCCNMessage'), 'Credit card number', 'emptyCCNMessage', $('.CCNMessage'));
+    submitError($('#zip'), $('.emptyZipMessage'), 'Zip code', 'emptyZipMessage', $('.zipCodeMessage'));
+    submitError($('#cvv'), $('.emptyCVVMessage'), 'CVV code', 'emptyCVVMessage', $('.CVVMessage'));
+  };
 });
